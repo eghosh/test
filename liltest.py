@@ -6,3 +6,5 @@ Created on Tue Feb  6 16:35:50 2018
 """
 
 #testing stuff
+#i am making some changes now
+#now i am making some changes
