@@ -1,0 +1,125 @@
+{UTF-8}
+c  = A FUNCTION OF( )
+	~	
+	~		|
+
+marginal expenditure:INTERPOLATE::=
+	GET DIRECT DATA('?params', '', '15' , 'B33' )
+	~	
+	~		|
+
+z  = A FUNCTION OF( )
+	~	
+	~		|
+
+wage share[i]:INTERPOLATE::=
+	GET DIRECT DATA('?params', '', '15' , 'B36' )
+	~	
+	~		|
+
+sectors:
+	domestic, exports
+	~	
+	~		|
+
+tech coeff[i,j]=
+	GET DIRECT CONSTANTS('?params', '', 'B40')
+	~	
+	~		|
+
+********************************************************
+	.Control
+********************************************************~
+		Simulation Control Parameters
+	|
+
+FINAL TIME  = 2055
+	~	Year
+	~	The final time for the simulation.
+	|
+
+INITIAL TIME  = 2011
+	~	Year
+	~	The initial time for the simulation.
+	|
+
+SAVEPER  = 1
+	~	Year [0,?]
+	~	The frequency with which output is stored.
+	|
+
+TIME STEP  = 0.25
+	~	Year [0,?]
+	~	The time step for the simulation.
+	|
+
+********************************************************
+	.multisector
+********************************************************~
+	|
+
+A[i,j]=
+	tech coeff[i,j] * z * c * marginal expenditure * wage share
+	~	
+	~		|
+
+i<->
+	sectors
+	~	
+	~		|
+
+j<->
+	sectors
+	~	
+	~		|
+
+********************************************************
+	.Scenarios
+********************************************************~
+	|
+
+scenarios:
+	CS1, CS2, CS3, CS4
+	~	
+	~		|
+
+\\\---/// Sketch information - do not modify anything except names
+V300  Do not put anything below this section - it will be ignored
+*View 1
+$192-192-192,0,Times New Roman|12||0-0-0|0-0-0|0-0-255|-1--1--1|-1--1--1|96,96,100,0
+10,1,tech coeff,295,182,32,11,8,3,0,0,0,0,0,0
+10,2,A,382,142,8,11,8,3,0,0,0,0,0,0
+10,3,c,445,190,6,11,8,3,0,0,-1,0,0,0
+1,4,3,2,0,0,0,0,0,64,0,-1--1--1,,1|(420,171)|
+10,5,marginal expenditure,480,142,37,19,8,3,0,0,-1,0,0,0
+1,6,5,2,0,0,0,0,0,64,0,-1--1--1,,1|(423,142)|
+1,7,1,2,0,0,0,0,0,64,0,-1--1--1,,1|(339,160)|
+10,8,wage share,433,79,36,11,8,3,0,0,-1,0,0,0
+1,9,8,2,0,0,0,0,0,64,0,-1--1--1,,1|(411,105)|
+10,10,z,382,215,5,11,8,3,0,0,-1,0,0,0
+1,11,10,2,0,0,0,0,0,64,0,-1--1--1,,1|(382,185)|
+///---\\\
+:L<%^E!@
+1:Current.vdf
+9:Current
+30:?params=GLCS_two_sector_parameters.csv
+15:0,0,0,0,0,0
+19:100,0
+27:0,
+34:0,
+4:Time
+5:wage share[sectors]
+35:Date
+36:YYYY
+37:0
+38:1
+39:1
+40:0
+41:0
+42:0
+24:2011
+25:2055
+26:2055
+6:CS1
+6:domestic
+6:exports

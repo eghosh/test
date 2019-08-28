@@ -1,0 +1,304 @@
+{UTF-8}
+consumption[i]=
+	(if then else(include sector[i] = 0, real basic consumption, 1)) + (consumption share\
+		[i] * theta * (Wage bill smoothed - real basic consumption))
+	~	
+	~		|
+
+consumption share[i]:=
+	GET DIRECT DATA('?params', '', '15' , 'B43' )
+	~	
+	~		|
+
+output[sectors]=
+	SUM(Leontief inverse matrix[sectors,j!] * (X[j!] + consumption[j!]))
+	~	
+	~		|
+
+wage bill delay=
+	Wage bill smoothed
+	~	
+	~		|
+
+Wage bill smoothed= INTEG (
+	(Wage bill - wage bill delay)/wage smoothing,
+		init smoothed wage bill)
+	~	
+	~		|
+
+gdp nominal=
+	gdp basic consumption direct + gdp exports direct + gdp indirect
+	~	
+	~		~	:SUPPLEMENTARY 
+	|
+
+gdp indirect=
+	SUM((if then else(include sector[i!] = 1, theta, 1) * (Wage bill smoothed - gdp basic consumption direct\
+		)))
+	~	
+	~		|
+
+Wage bill=
+	SUM(prices[sectors!] * wage share[sectors!] * output[sectors!])
+	~	
+	~		|
+
+domestic price of exports=
+	exchange rate * price of exports
+	~	
+	~		|
+
+exchange rate:=
+	GET DIRECT DATA('?params', '', '15' , 'B70')
+	~	
+	~		|
+
+gdp basic consumption direct=
+	real basic consumption * price of consumption
+	~	
+	~		|
+
+gdp exports direct=
+	SUM(X[i!] * domestic price of exports)
+	~	
+	~		|
+
+one minus A[i,j]=
+	(identity matrix[i,j]-tech coefficients[i,j])
+	~	
+	~		|
+
+init smoothed wage bill=
+	init wage basic cons mult * real basic consumption
+	~	
+	~		|
+
+init wage basic cons mult=
+	GET DIRECT CONSTANTS('?params','','B10')
+	~	
+	~		|
+
+prices[i]=
+	if then else(i = 1, domestic price of exports, price of consumption)
+	~	
+	~		|
+
+wage smoothing:=
+	GET DIRECT DATA('?params', '', '15' , 'B45' )
+	~	
+	~		|
+
+minimum consumption level:=
+	GET DIRECT DATA('?params', '', '15' , 'B34' )
+	~	
+	~		|
+
+N:=
+	GET DIRECT DATA('?params', '', '97' , 'B119' )
+	~	
+	~		|
+
+price of consumption:=
+	GET DIRECT DATA('?params', '', '97' , 'B104')
+	~	
+	~		|
+
+real basic consumption=
+	minimum consumption level * N
+	~	
+	~		|
+
+X[i]:=
+	GET DIRECT DATA('?params', '', '97' , 'B111' )
+	~	
+	~		|
+
+price of exports:=
+	GET DIRECT DATA('?params', '', '15' , 'B74')
+	~	
+	~		|
+
+tech coefficients[i,j]=
+	GET DIRECT CONSTANTS('?params', '' , 'B40' )
+	~	
+	~		|
+
+identity matrix[i,j]=
+	if then else(i = j, 1, 0)
+	~	
+	~		|
+
+include sector[i]:=
+	GET DIRECT DATA('?params', '', '97' , 'B94' )
+	~	
+	~		|
+
+wage share[i]:=
+	GET DIRECT DATA('?params', '', '15' , 'B36' )
+	~	
+	~		|
+
+Leontief inverse matrix[i,j]=
+	INVERT MATRIX(one minus A[i,j],ELMCOUNT(sectors))
+	~	
+	~		|
+
+theta:=
+	GET DIRECT DATA('?params', '', '97' , 'B98' )
+	~	
+	~		|
+
+i:
+	sectors
+	~	
+	~		|
+
+j:
+	sectors
+	~	
+	~		|
+
+sectors:
+	domestic, export
+	~	
+	~		|
+
+********************************************************
+	.Control
+********************************************************~
+		Simulation Control Parameters
+	|
+
+FINAL TIME  = 2055
+	~	Year
+	~	The final time for the simulation.
+	|
+
+INITIAL TIME  = 2011
+	~	Year
+	~	The initial time for the simulation.
+	|
+
+SAVEPER  = 1
+	~	Year [0,?]
+	~	The frequency with which output is stored.
+	|
+
+TIME STEP  = 0.25
+	~	Year [0,?]
+	~	The time step for the simulation.
+	|
+
+\\\---/// Sketch information - do not modify anything except names
+V300  Do not put anything below this section - it will be ignored
+*gdp
+$192-192-192,0,Times New Roman|12||0-0-0|0-0-0|0-0-255|-1--1--1|-1--1--1|96,96,100,0
+10,1,gdp nominal,126,252,39,11,8,3,0,0,0,0,0,0
+10,2,gdp exports direct,284,153,57,11,8,3,0,0,0,0,0,0
+10,3,gdp indirect,279,377,38,11,8,3,0,0,0,0,0,0
+10,4,gdp basic consumption direct,280,253,60,19,8,3,0,0,0,0,0,0
+1,5,2,1,0,0,0,0,0,128,0,-1--1--1,,1|(210,198)|
+1,6,3,1,0,0,0,0,0,128,0,-1--1--1,,1|(207,318)|
+1,7,4,1,0,0,0,0,0,128,0,-1--1--1,,1|(199,252)|
+10,8,theta,415,418,17,11,8,3,0,2,0,0,0,0,-1--1--1,0-0-0,|12||0-0-255
+1,9,4,3,0,0,0,0,0,128,0,-1--1--1,,1|(279,312)|
+1,10,8,3,0,0,0,0,0,128,0,-1--1--1,,1|(363,402)|
+10,11,wage share,685,281,36,11,8,3,0,2,0,0,0,0,-1--1--1,0-0-0,|12||0-0-255
+10,12,output,695,308,21,11,8,3,0,0,0,0,0,0
+10,13,consumption,798,317,40,11,8,3,0,0,0,0,0,0
+1,14,13,12,0,0,0,0,0,128,0,-1--1--1,,1|(743,312)|
+10,15,gdp basic consumption direct,984,279,65,19,8,2,1,3,-1,0,0,0,128-128-128,0-0-0,|12||128-128-128
+10,16,gdp indirect,991,343,47,11,8,2,1,3,-1,0,0,0,128-128-128,0-0-0,|12||128-128-128
+10,17,tech coefficients,947,417,50,11,8,3,0,2,0,0,0,0,-1--1--1,0-0-0,|12||0-0-255
+10,18,real basic consumption,427,226,41,19,8,3,0,2,0,0,0,0,-1--1--1,0-0-0,|12||0-0-255
+10,19,X,437,175,8,11,8,3,0,2,0,0,0,0,-1--1--1,0-0-0,|12||0-0-255
+1,20,19,2,0,0,0,0,0,128,0,-1--1--1,,1|(391,168)|
+1,21,18,4,0,0,0,0,0,128,0,-1--1--1,,1|(369,235)|
+10,22,X,808,249,17,11,8,2,0,3,-1,0,0,0,128-128-128,0-0-0,|12||128-128-128
+1,23,22,12,0,0,0,0,0,128,0,-1--1--1,,1|(759,273)|
+10,24,real basic consumption,945,246,45,19,8,2,0,3,-1,0,0,0,128-128-128,0-0-0,|12||128-128-128
+10,25,theta,932,290,26,11,8,2,0,3,-1,0,0,0,128-128-128,0-0-0,|12||128-128-128
+1,26,24,13,0,0,0,0,0,128,0,-1--1--1,,1|(869,282)|
+1,27,25,13,0,0,0,0,0,128,0,-1--1--1,,1|(878,300)|
+10,28,Leontief inverse matrix,814,387,50,19,8,3,0,0,0,0,0,0
+1,29,28,12,0,0,0,0,0,128,0,-1--1--1,,1|(754,347)|
+10,30,identity matrix,941,486,44,11,8,3,0,0,0,0,0,0
+10,31,include sector,371,460,44,11,8,3,0,2,0,0,0,0,-1--1--1,0-0-0,|0||0-0-255
+10,33,wage smoothing,639,342,51,11,8,3,0,0,0,0,0,0
+10,35,exchange rate,248,629,44,11,8,3,0,2,0,0,0,0,-1--1--1,0-0-0,|12||0-0-255
+10,36,price of exports,253,732,50,11,8,3,0,2,0,0,0,0,-1--1--1,0-0-0,|12||0-0-255
+10,37,domestic price of exports,374,680,55,19,8,3,0,0,0,0,0,0
+10,38,price of consumption,373,576,41,19,8,3,0,2,0,0,0,0,-1--1--1,0-0-0,|12||0-0-255
+10,39,prices,479,618,20,11,8,3,0,0,0,0,0,0
+1,40,37,39,0,0,0,0,0,64,0,-1--1--1,,1|(426,648)|
+1,41,38,39,0,0,0,0,0,64,0,-1--1--1,,1|(430,598)|
+1,42,35,37,0,0,0,0,0,64,0,-1--1--1,,1|(294,647)|
+1,43,36,37,0,0,0,0,0,64,0,-1--1--1,,1|(297,712)|
+10,44,minimum consumption level,569,185,57,19,8,3,0,2,-1,0,0,0,-1--1--1,0-0-0,|12||0-0-255
+1,45,44,18,0,0,0,0,0,64,0,-1--1--1,,1|(496,205)|
+10,46,N,563,251,8,11,8,3,0,2,-1,0,0,0,-1--1--1,0-0-0,|12||0-0-255
+1,47,46,18,0,0,0,0,0,64,0,-1--1--1,,1|(518,242)|
+10,48,domestic price of exports,451,121,60,19,8,2,0,3,-1,0,0,0,128-128-128,0-0-0,|12||128-128-128
+1,49,48,2,0,0,0,0,0,128,0,-1--1--1,,1|(372,135)|
+10,50,price of consumption,427,289,45,19,8,2,0,3,-1,0,0,0,128-128-128,0-0-0,|12||128-128-128
+1,51,50,4,0,0,0,0,0,128,0,-1--1--1,,1|(367,274)|
+10,52,one minus A,810,451,40,11,8,3,0,0,0,0,0,0
+1,53,52,28,0,0,0,0,0,64,0,-1--1--1,,1|(810,429)|
+1,54,30,52,0,0,0,0,0,64,0,-1--1--1,,1|(881,469)|
+1,55,17,52,0,0,0,0,0,64,0,-1--1--1,,1|(883,432)|
+10,56,init smoothed wage bill,511,453,43,19,8,3,0,0,-1,0,0,0
+10,58,init wage basic cons mult,666,484,47,19,8,3,0,0,-1,0,0,0
+1,59,58,56,0,0,0,0,0,64,0,-1--1--1,,1|(593,469)|
+10,60,real basic consumption,662,429,45,19,8,2,0,3,-1,0,0,0,128-128-128,0-0-0,|12||128-128-128
+1,61,60,56,0,0,0,0,0,128,0,-1--1--1,,1|(592,439)|
+1,62,31,3,0,0,0,0,0,64,0,-1--1--1,,1|(330,423)|
+10,63,consumption share,952,322,58,11,8,3,0,0,-1,0,0,0
+1,64,63,13,0,0,0,0,0,64,0,-1--1--1,,1|(872,319)|
+10,65,include sector,927,203,53,11,8,2,0,3,-1,0,0,0,128-128-128,0-0-0,|0||128-128-128
+1,66,65,13,0,0,0,0,0,128,0,-1--1--1,,1|(867,255)|
+10,67,Wage bill smoothed,513,377,40,20,3,3,0,2,0,0,0,0,-1--1--1,0-0-0,|0||255-0-0
+12,68,48,691,377,10,8,0,3,0,0,-1,0,0,0
+1,69,71,68,4,0,0,22,0,0,0,-1--1--1,,1|(649,375)|
+1,70,71,67,100,0,0,22,0,0,0,-1--1--1,,1|(579,375)|
+11,71,0,611,375,6,8,34,3,0,0,1,0,0,0
+10,72,wage bill delay,611,394,50,11,40,3,0,0,-1,0,0,0
+12,73,48,508,282,10,8,0,3,0,0,-1,0,0,0
+1,74,76,67,4,0,0,22,0,0,0,-1--1--1,,1|(508,337)|
+1,75,76,73,100,0,0,22,0,0,0,-1--1--1,,1|(508,298)|
+11,76,0,508,312,8,6,33,3,0,0,4,0,0,0
+10,77,Wage bill,550,312,34,11,40,3,0,0,-1,0,0,0
+1,78,12,77,0,0,0,0,0,64,0,-1--1--1,,1|(635,309)|
+1,79,11,77,0,0,0,0,0,64,0,-1--1--1,,1|(623,294)|
+10,80,prices,660,250,29,11,8,2,0,3,-1,0,0,0,128-128-128,0-0-0,|0||128-128-128
+1,81,80,77,0,0,0,0,0,128,0,-1--1--1,,1|(611,277)|
+1,82,56,67,0,0,0,0,0,64,1,-1--1--1,,1|(511,422)|
+1,83,33,67,1,0,0,0,0,64,0,-1--1--1,,1|(553,351)|
+1,84,67,72,1,0,0,0,0,64,0,-1--1--1,,1|(569,415)|
+1,85,67,3,0,0,0,0,0,64,0,-1--1--1,,1|(402,377)|
+10,86,Wage bill smoothed,940,358,36,19,8,2,0,3,-1,0,0,0,128-128-128,0-0-0,|0||128-128-128
+1,87,86,13,0,0,0,0,0,128,0,-1--1--1,,1|(876,339)|
+10,88,TIME STEP,812,439,50,11,8,2,1,3,-1,0,0,0,128-128-128,0-0-0,|0||128-128-128
+///---\\\
+:L<%^E!@
+1:Update.vdf
+9:Update
+30:?params=GLCS_two_sector_parameters.csv
+15:0,0,0,0,0,0
+19:100,0
+27:0,
+34:0,
+4:Time
+5:Wage bill smoothed
+35:Date
+36:YYYY-MM-DD
+37:0
+38:1
+39:1
+40:0
+41:0
+42:1
+24:2011
+25:2055
+26:2055
+6:domestic
+6:export

@@ -1,0 +1,42 @@
+!File edited at time Thu Jul 11 09:39:14 2019
+#73\ File length
+-25\tech coeff=A FUNCTION OF(tech coeff) ~~|
+-25\tech coeff[i,j]:INTERPOLATE::=
+-25\	GET DIRECT CONSTANTS('?params', '', 'B40')
+-25\	~	
++25\	~	
+-25\	~	
++25\tech coeff[i,j]=
++26\	GET DIRECT CONSTANTS('?params', '', 'B40')
++27\
+-27\
++27\	~	
+-0\C[i]:INTERPOLATE::=
++0\C[i]:=
+-0\C[i]:=
++0\C[i]=
+-30\X[i]:INTERPOLATE::=
++30\X[i]:=
+-30\X[i]:=
++30\X[i]=
+!File edited at time Fri Jul 12 15:38:22 2019
+#272\ File length
+-123\include theta=A FUNCTION OF(include theta) ~~|
++123\
+-122\
+-122\
++122\
+-124\	GET DIRECT CONSTANTS('?params', '', 'B94)
+'
+-124\	~	
++124\	GET DIRECT CONSTANTS('?params', '', 'B94)
+'	~	
++125\	
+-125\	
++125\	~	
+!File edited at time Fri Jul 12 15:38:44 2019
+#271\ File length
+-124\	GET DIRECT CONSTANTS('?params', '', 'B94)
+'
++124\	GET DIRECT CONSTANTS('?params', '', 'B94')
+
